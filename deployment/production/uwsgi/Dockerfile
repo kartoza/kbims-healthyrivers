@@ -9,9 +9,9 @@ RUN pip install -r /REQUIREMENTS.txt
 ARG HEALTHYRIVERS_TAG=develop
 WORKDIR /usr/src
 RUN git clone --depth=1 --branch ${HEALTHYRIVERS_TAG} git://github.com/kartoza/healthyrivers.git /usr/src/HEALTHYRIVERS_BIMS
-RUN cd /usr/src/healthyrivers/django_project && git submodule init && git submodule update
+RUN cd /usr/src/HEALTHYRIVERS_BIMS/django_project && git submodule init && git submodule update
 RUN mkdir -p /usr/src/healthyrivers
-RUN cp -r healthyrivers/django_project/* /usr/src/healthyrivers
+RUN cp -r HEALTHYRIVERS_BIMS/django_project/* /usr/src/healthyrivers
 
 WORKDIR /usr/src/healthyrivers
 
