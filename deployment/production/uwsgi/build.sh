@@ -18,7 +18,7 @@ fi
 
 # Build Args Environment
 
-if [ -z "HEALTHYRIVERS_TAG" ]; then
+if [ -z "$HEALTHYRIVERS_TAG" ]; then
 	HEALTHYRIVERS_TAG=develop
 fi
 
