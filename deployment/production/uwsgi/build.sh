@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ -z "$REPO_NAME" ]; then
-	REPO_NAME=kartoza
+	REPO_NAME=dimasciput
 fi
 
 if [ -z "$IMAGE_NAME" ]; then
@@ -18,16 +18,16 @@ fi
 
 # Build Args Environment
 
-if [ -z "HEALHTYRIVERS_TAG" ]; then
-	HEALHTYRIVERS_TAG=develop
+if [ -z "HEALTHYRIVERS_TAG" ]; then
+	HEALTHYRIVERS_TAG=develop
 fi
 
-echo "HEALHTYRIVERS_TAG=${HEALHTYRIVERS_TAG}"
+echo "HEALTHYRIVERS_TAG=${HEALTHYRIVERS_TAG}"
 
 echo "Build: $REPO_NAME/$IMAGE_NAME:$TAG_NAME"
 
 docker build -t ${REPO_NAME}/${IMAGE_NAME} \
-	--build-arg HEALHTYRIVERS_TAG=${HEALHTYRIVERS_TAG} \
+	--build-arg HEALTHYRIVERS_TAG=${HEALTHYRIVERS_TAG} \
 	${BUILD_ARGS} .
 docker tag ${REPO_NAME}/${IMAGE_NAME}:latest ${REPO_NAME}/${IMAGE_NAME}:${TAG_NAME}
 docker push ${REPO_NAME}/${IMAGE_NAME}:${TAG_NAME}

@@ -6,9 +6,9 @@ MAINTAINER Dimas Ciputra<dimas@kartoza.com>
 COPY REQUIREMENTS.txt /REQUIREMENTS.txt
 RUN pip install -r /REQUIREMENTS.txt
 
-ARG HEALHTYRIVERS_TAG=develop
+ARG HEALTHYRIVERS_TAG=develop
 WORKDIR /usr/src
-RUN git clone --depth=1 --branch ${HEALHTYRIVERS_TAG} git://github.com/kartoza/healthyrivers.git /usr/src/healthyrivers
+RUN git clone --depth=1 --branch ${HEALTHYRIVERS_TAG} git://github.com/kartoza/healthyrivers.git /usr/src/healthyrivers
 RUN cd /usr/src/healthyrivers/django_project && git submodule init && git submodule update
 RUN mkdir -p /usr/src/healthyrivers
 RUN cp -r healthyrivers/django_project/* /usr/src/healthyrivers
