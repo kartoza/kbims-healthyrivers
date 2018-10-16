@@ -22,7 +22,6 @@ services:
       - maildomain=kartoza.com
       - smtp_user=noreply:docker
     restart: unless-stopped
-    network_mode: "bridge"
 
   db:
     # Note you cannot scale if you use container_name
@@ -37,7 +36,6 @@ services:
       - USERNAME=docker
       - PASS=docker
     restart: unless-stopped
-    network_mode: "bridge"
   #  Uncomment the next line to have an access with PGAdmin using localhost and port 25432 on your computer.
   #  Only for development !
   #  ports:
@@ -49,7 +47,6 @@ services:
     command: /bin/true
     volumes:
       - geoserver-data-dir:/geoserver_data/data
-    network_mode: "bridge"
 
   geoserver:
     image: geosolutionsit/geoserver-docker:2.13.x
@@ -58,23 +55,18 @@ services:
       - db
     volumes:
       - geoserver-data-dir:/geoserver_data/data
-    network_mode: "bridge"
 
   healthyrivers_uwsgi:
     build:
       context: docker
       dockerfile: Dockerfile
     image: healthyrivers_uwsgi:latest
-    network_mode: "bridge"
 
   uwsgi:
     build:
       context: docker
     command: uwsgi --ini /home/web/uwsgi.conf
     working_dir: /usr/src/app
-    links:
-      - elasticsearch
-      - geoserver
     environment:
       - DATABASE_NAME=gis
       - DATABASE_USERNAME=docker
@@ -97,9 +89,10 @@ services:
       - db:db
       - elasticsearch:elasticsearch
       - geoserver:geoserver
+      - worker:worker
+      - rabbitmq:rabbitmq
     restart: on-failure:5
     user: root
-    network_mode: "bridge"
 
   dbbackups:
     # Note you cannot scale if you use container_name
@@ -120,7 +113,7 @@ services:
       - PGHOST=db
       - PGDATABASE=gis
     restart: unless-stopped
-    network_mode: "bridge"
+     
 
   # This is normally the main entry point for a production server
   web:
@@ -139,7 +132,7 @@ services:
       - db
       - geoserver
     restart: unless-stopped
-    network_mode: "bridge"
+     
 
   btsync-db:
     # BTSync backups for database dumps
@@ -148,7 +141,7 @@ services:
     volumes:
       # We mount RW so that we can use remove peer to clean up old backups off the server
       - ./backups:/web:rw
-    network_mode: "bridge"
+     
 
   btsync-media:
     # BTSync backups for django media
@@ -157,40 +150,54 @@ services:
     volumes:
       # We mount RO as we do not really want peers to change this data
       - ./media:/web:ro
-    network_mode: "bridge"
 
   rabbitmq:
-    image: library/rabbitmq
+    image: library/rabbitmq:3.6
     hostname: rabbitmq
     environment:
       - RABBIT_PASSWORD=rabbit_test_password
       - USER=rabbit_user
       - RABBITMQ_NODENAME=rabbit
     restart: unless-stopped
-    network_mode: "bridge"
 
   worker:
-    build: ../src/healthyrivers/deployment/docker
+    build:
+      context: docker
     hostname: worker
-    command: celery worker -A base.celery -l info  --beat
+    working_dir: /usr/src/bims
+    command: celery worker --app=bims.celery:app -B -l info
+    entrypoint: []
     environment:
       - DATABASE_NAME=gis
       - DATABASE_USERNAME=docker
       - DATABASE_PASSWORD=docker
       - DATABASE_HOST=db
-      - RABBITMQ_HOST=rabbitmq
-      - DJANGO_SETTINGS_MODULE=core.settings.prod_docker
-      - VIRTUAL_HOST=healthyrivers.kartoza.com
+      - DJANGO_SETTINGS_MODULE=core.settings.dev_docker
+      - VIRTUAL_HOST=bims.kartoza.com
       - VIRTUAL_PORT=8080
-      - C_FORCE_ROOT=true
+      - RABBITMQ_HOST=rabbitmq
+      - HAYSTACK_HOST=elasticsearch
+      - GEOCONTEXT_URL=https://geocontext.kartoza.com
+      - GEOCONTEXT_COLLECTION_KEY=climate
+      - CONTACT_US_EMAIL=dimas@kartoza.com
+      - APP_NAME=bims
+      - ASYNC_SIGNALS_GEONODE=True
+      - PYTHONPATH=/usr/src/app:/usr/src/bims:/home/web/django_project
     volumes:
-      - ../django_project:/home/web/django_proj ect
+      - ../src/healthyrivers/django_project:/home/web/django_project
       - ./static:/home/web/static:rw
       - ./media:/home/web/media:rw
       - ./reports:/home/web/reports
       - ./logs:/var/log/
-    restart: on-failure:5
-    network_mode: "bridge"
+    links:
+      - smtp:smtp
+      - db:db
+      - elasticsearch:elasticsearch
+      - geoserver:geoserver
+      - rabbitmq:rabbitmq
+      - cache:cache
+    restart: unless-stopped
+     
 
   elasticsearch:
     # Note you cannot scale if you use conteiner_name
@@ -202,4 +209,10 @@ services:
     environment:
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
-    network_mode: "bridge"
+     
+
+  cache:
+   image: memcached
+   entrypoint:
+    - memcached
+    - -m 64
