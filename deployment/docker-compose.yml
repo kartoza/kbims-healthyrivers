@@ -51,8 +51,9 @@ services:
   geoserver:
     image: geosolutionsit/geoserver-docker:2.13.x
     restart: unless-stopped
-    links:
+    depends_on:
       - db
+      - data-dir-conf
     volumes:
       - geoserver-data-dir:/geoserver_data/data
 
