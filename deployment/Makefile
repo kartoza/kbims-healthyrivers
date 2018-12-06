@@ -228,7 +228,7 @@ dbrestore:
 	@# - prefix causes command to continue even if it fails
 	-@docker-compose exec db su - postgres -c "dropdb gis"
 	@docker-compose exec db su - postgres -c "createdb -O docker -T template_postgis gis"
-	@docker-compose exec db pg_restore /backups/latest.dmp | docker-compose exec db su - postgres -c "psql gis"
+	@docker-compose exec db bash -c 'pg_restore backups/latest.dmp | su - postgres -c "psql gis"'
 
 db-fresh-restore:
 	@echo
@@ -347,6 +347,12 @@ pep8:haystack
 	@pep8 --version
 	@pep8 --repeat --ignore=E203,E121,E122,E123,E124,E125,E126,E127,E128,E402  --exclude='../django_project/.pycharm_helpers','../django_project/*/migrations/','../django_project/*/urls.py','../django_project/core/settings/secret.py' ../django_project || true
 
+update-bims-branch:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Pull latest branch for bims repo"
+	@echo "------------------------------------------------------------------"
+	@docker-compose exec uwsgi /bin/sh -c "cd /usr/src/bims; git pull origin develop"
 
 # --------------- help --------------------------------
 
