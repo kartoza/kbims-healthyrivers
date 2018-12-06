@@ -350,7 +350,7 @@ pep8:haystack
 update-bims-branch:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Pull latest branch for bims repo"
+	@echo "Pull latest django-bims develop branch"
 	@echo "------------------------------------------------------------------"
 	@docker-compose exec uwsgi /bin/sh -c "cd /usr/src/bims; git pull origin develop"
 
