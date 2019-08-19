@@ -20,7 +20,7 @@ jobs:
     - name: Build the Docker image
       uses: actions/docker/cli@master
       with:
-        args: build deployment/production/uwsgi/ --build-arg BIMS_TAG=develop --tag dimasciput/freshwaterbiodiversity:latest
+        args: build deployment/production/uwsgi/ --build-arg BIMS_TAG=latest --tag dimasciput/freshwaterbiodiversity:latest
     - name: Push the Docker Image
       uses: actions/docker/cli@master
       with:
