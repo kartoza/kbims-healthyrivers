@@ -314,6 +314,15 @@ elasticsearch:
 	@echo "------------------------------------------------------------------"
 	@docker-compose up -d elasticsearch
 
+reset-search-results:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Reset search results"
+	@echo "------------------------------------------------------------------"
+	@docker-compose exec uwsgi python manage.py clear_search_results
+	@docker-compose ${ARGS} restart worker
+	@docker-compose ${ARGS} restart cache
+
 # ----------------------------------------------------------------------------
 #    DEVELOPMENT C O M M A N D S
 # --no-deps will attach to prod deps if running

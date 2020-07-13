@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
 if [ -z "$REPO_NAME" ]; then
-	REPO_NAME=dimasciput
+	REPO_NAME=kartoza
 fi
 
 if [ -z "$IMAGE_NAME" ]; then
-	IMAGE_NAME=healthyrivers_uwsgi
+	IMAGE_NAME=freshwaterbiodiversity
 fi
 
 if [ -z "$TAG_NAME" ]; then
-	TAG_NAME=latest
+	TAG_NAME=v3.0
 fi
 
 if [ -z "$BUILD_ARGS" ]; then
@@ -19,11 +19,11 @@ fi
 # Build Args Environment
 
 if [ -z "$HEALTHYRIVERS_TAG" ]; then
-	HEALTHYRIVERS_TAG=develop
+	HEALTHYRIVERS_TAG=3.0
 fi
 
 if [ -z "$BIMS_TAG" ]; then
-	BIMS_TAG=latest
+	BIMS_TAG=v3.0
 fi
 
 echo "HEALTHYRIVERS_TAG=${HEALTHYRIVERS_TAG}"

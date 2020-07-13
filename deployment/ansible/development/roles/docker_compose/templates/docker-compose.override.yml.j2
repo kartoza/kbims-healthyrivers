@@ -34,7 +34,7 @@ services:
   btsync-db:
     environment:
 
-      {% for key, value in btsync_db.environment.iteritems() %}
+      {% for key, value in btsync_db.environment.items() %}
 
       - {{ key }}={{ value }}
 
@@ -43,7 +43,7 @@ services:
   btsync-media:
     environment:
 
-      {% for key, value in btsync_media.environment.iteritems() %}
+      {% for key, value in btsync_media.environment.items() %}
 
       - {{ key }}={{ value }}
 
@@ -52,7 +52,7 @@ services:
   geoserver:
     environment:
 
-      {% for key, value in geoserver.environment.iteritems() %}
+      {% for key, value in geoserver.environment.items() %}
 
       - {{ key }}={{ value }}
 
@@ -71,13 +71,13 @@ services:
 
     environment:
 
-      {% for key, value in django.environment.iteritems() %}
+      {% for key, value in django.environment.items() %}
 
       - {{ key }}={{ value }}
 
       {% endfor %}
 
-      {% for key, value in geonode.environment.iteritems() %}
+      {% for key, value in geonode.environment.items() %}
 
       - {{ key }}={{ value }}
 

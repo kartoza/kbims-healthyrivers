@@ -1,4 +1,4 @@
 [submodule "src/healthyrivers"]
 	path = src/healthyrivers
 	url = https://github.com/kartoza/healthyrivers.git
-	branch = develop
+	branch = 3.0
